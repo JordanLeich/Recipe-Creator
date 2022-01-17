@@ -1,0 +1,6 @@
+--- Important Info about this command ---
+1. You need pyinstaller installed in order to use this command in either the command prompt or terminal. use pip install pyinstaller.
+2. Use this command each time changes or updates are made to the program to then update the exe version.
+
+--- Command ---
+pyinstaller -F -i icon\icon.ico main.py -n Recipe-Creator
