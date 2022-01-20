@@ -68,14 +68,18 @@ def main() -> None:  # sourcery no-metrics
     }
     found_food = False
     for food, ingredients in recipes.items():
-        if any(map(lambda i: i in ingredients_list, ingredients)):
+        if all(map(lambda i: i in ingredients_list, ingredients)) and len(ingredients_list) > 2:
+            print_green(food)
+            found_food = True
+            print()
+        elif any(map(lambda i: i in ingredients_list, ingredients)) and len(ingredients_list) < 3:
             print_green(food)
             found_food = True
             print()
     if not found_food:
         print_red(f'There are no recipes in the database with the ingrediens of {ingredients_list}')
     sleep(1)
-    input("Press enter to exit...")
+    just_enter = input("Press enter to exit...")
     # sys.exit() Isn't needed yet. after input it returns back to __name__ then exits normally
     # once the program evolves, then the sys.exit() would be useful. as of now just a blank
     # return would do.
