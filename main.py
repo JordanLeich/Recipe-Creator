@@ -2,9 +2,25 @@ import sys
 from colors import print_red, print_green
 from os.path import exists as file_exists
 
-
 # Constant variables
 INGREDIENTS_LIST_FILE_PATH = 'ingredients.txt'
+
+
+def add_to_ingredients_file():
+    with open(INGREDIENTS_LIST_FILE_PATH, 'w') as file:
+        number = 0
+        how_many_ingredients = int(input('How many ingredients would you like to add? '))
+        print()
+        while number != how_many_ingredients:
+            user_input_ingredients = str(input('Ingredient name: '))
+            print()
+            file.write(user_input_ingredients)
+            file.write('\n')
+            print_green('Ingredient added!\n')
+            number += 1
+    print_green('All ingredients have been added, the script will now rerun itself to show all possible '
+                'recipes.\n', 1)
+    main()
 
 
 def main() -> None:  # sourcery no-metrics
@@ -13,11 +29,10 @@ def main() -> None:  # sourcery no-metrics
 
     if file_exists(INGREDIENTS_LIST_FILE_PATH):  # To verify the file exist.
         with open(INGREDIENTS_LIST_FILE_PATH) as file:
-            ingredients_list = file.read().splitlines() # TODO steralize list of invalid characters  
+            ingredients_list = file.read().splitlines()  # TODO sterilize list of invalid characters
     else:  # When the file doesn't exist.
-        print_red('Please create a new text file named: ingredients.txt and rerun the program!\n', 2)
-        # TODO create file, open and allow user to input details for next rerun of program
-        sys.exit()
+        print_red('Since the ingredients.txt file does not exist, a new file will be created!\n', 2)
+        add_to_ingredients_file()
 
     recipes = {  # TODO: Keep adding more recipes
         'Macaroni & Cheese': ['milk', 'noodles', 'cheese'],
@@ -62,14 +77,21 @@ def main() -> None:  # sourcery no-metrics
     }
     found_food = False
     for food, ingredients in recipes.items():  # N^2 algorithm # TODO decrease time complexity
-        if all(x in ingredients_list for x in ingredients): # check if ingredients are a sublist of ingredients_list
+        if all(x in ingredients_list for x in ingredients):  # check if ingredients are a sublist of ingredients_list
             print_green(food)
             found_food = True
             print()
-            
+    input('Press enter to exit')  # Keep this line so that the script cmd window doesn't automatically close for users.
+    print()
+
     if not found_food:
-        print_red('No recipes can be created, try adding more to the ingredients.txt file and rerun the '
-                  'program!\n', 3)
+        print_red('No recipes can be created.\n')
+        user_input = str(input('would you like to add ingredients to the ingredients.txt file (yes / no): '))
+        print()
+        if user_input.lower() in ['yes', 'y']:
+            add_to_ingredients_file()
+        else:
+            sys.exit()
 
 
 if __name__ == '__main__':
