@@ -6,21 +6,20 @@ from os.path import exists as file_exists
 INGREDIENTS_LIST_FILE_PATH = 'ingredients.txt'
 
 
-def add_to_ingredients_file():
+def add_to_ingredients_file() -> list:
+    ingredients_list = []
     with open(INGREDIENTS_LIST_FILE_PATH, 'w') as file:
-        number = 0
-        how_many_ingredients = int(input('How many ingredients would you like to add? '))
+        ingredient_number = int(input('How many ingredients would you like to add? '))
         print()
-        while number != how_many_ingredients:
+        for _ in range(ingredient_number):  # TODO change to while loop that will accept ingredients without having to count them out
             user_input_ingredients = str(input('Ingredient name: '))
             print()
-            file.write(user_input_ingredients)
-            file.write('\n')
+            file.write(f"{user_input_ingredients}\n")
+            ingredients_list.append(user_input_ingredients)
             print_green('Ingredient added!\n')
-            number += 1
-    print_green('All ingredients have been added, the script will now rerun itself to show all possible '
-                'recipes.\n', 1)
-    main()
+    
+    print_green('Here are all of the possible recipes.\n', 1)
+    return ingredients_list
 
 
 def main() -> None:  # sourcery no-metrics
@@ -32,7 +31,7 @@ def main() -> None:  # sourcery no-metrics
             ingredients_list = file.read().splitlines()  # TODO sterilize list of invalid characters
     else:  # When the file doesn't exist.
         print_red('Since the ingredients.txt file does not exist, a new file will be created!\n', 2)
-        add_to_ingredients_file()
+        ingredients_list = add_to_ingredients_file()
 
     recipes = {  # TODO: Keep adding more recipes
         'Macaroni & Cheese': ['milk', 'noodles', 'cheese'],
@@ -76,7 +75,7 @@ def main() -> None:  # sourcery no-metrics
         'Nachos w/Cheese': ['chips', 'meat', 'salsa', 'cheese'],
     }
     found_food = False
-    for food, ingredients in recipes.items():  # N^2 algorithm # TODO decrease time complexity
+    for food, ingredients in recipes.items():  # N*M time complexity # TODO decrease time complexity
         if all(x in ingredients_list for x in ingredients):  # check if ingredients are a sublist of ingredients_list
             print_green(food)
             found_food = True
@@ -85,7 +84,7 @@ def main() -> None:  # sourcery no-metrics
     print()
 
     if not found_food:
-        print_red('No recipes can be created.\n')
+        print_red('Sorry, no recipes can be created.\n')
         user_input = str(input('would you like to add ingredients to the ingredients.txt file (yes / no): '))
         print()
         if user_input.lower() in ['yes', 'y']:
@@ -95,4 +94,5 @@ def main() -> None:  # sourcery no-metrics
 
 
 if __name__ == '__main__':
-    main()
+    while True:
+        main()
