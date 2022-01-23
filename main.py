@@ -69,7 +69,17 @@ def main() -> None:  # sourcery no-metrics
             found_food = True
             print()
         elif any(map(lambda i: i in ingredients_list, ingredients)) and len(ingredients_list) < 3:
-            print_green(food)
+            have_food = []
+            not_food = []
+            for food2 in ingredients:
+                if food2 in ingredients_list:
+                    have_food.append(food2)
+                else:
+                    not_food.append(food2)
+            message_food = food + f' Have ingredient {have_food} Ingredients to get {not_food}'
+            print_green(f'Recipe Name: {food}')
+            print_green(f'Have Ingredients: {have_food}')
+            print_red(f'Ingredients to get {not_food}')
             found_food = True
             print()
     if not found_food:
