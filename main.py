@@ -1,6 +1,5 @@
 import sys
 from colors import print_red, print_green
-from time import sleep
 from os.path import exists as file_exists
 
 
@@ -12,13 +11,12 @@ def main() -> None:  # sourcery no-metrics
     """Holds all possible recipe ingredients and then outputs all possible recipes based upon every line that is read
     in the ingredients.txt file."""
 
-    if bool(file_exists(INGREDIENTS_LIST_FILE_PATH)):  # To verify the file exist.
+    if file_exists(INGREDIENTS_LIST_FILE_PATH):  # To verify the file exist.
         with open(INGREDIENTS_LIST_FILE_PATH) as file:
-            ingredients_list = file.read().splitlines()
-        file.close()
+            ingredients_list = file.read().splitlines() # TODO steralize list of invalid characters  
     else:  # When the file doesn't exist.
         print_red('Please create a new text file named: ingredients.txt and rerun the program!\n', 2)
-        input("Press enter to exit...")
+        # TODO create file, open and allow user to input details for next rerun of program
         sys.exit()
 
     recipes = {  # TODO: Keep adding more recipes
@@ -63,21 +61,15 @@ def main() -> None:  # sourcery no-metrics
         'Nachos w/Cheese': ['chips', 'meat', 'salsa', 'cheese'],
     }
     found_food = False
-    for food, ingredients in recipes.items():  # TODO Fix recipes displaying incorrectly based upon the ingredients list. For example, if i only have bread, i shouldn't be able to make grilled cheese or a ham and cheese sandwich.
-        if all(map(lambda i: i in ingredients_list, ingredients)) and len(ingredients_list) > 2:
+    for food, ingredients in recipes.items():  # N^2 algorithm # TODO decrease time complexity
+        if all(x in ingredients_list for x in ingredients): # check if ingredients are a sublist of ingredients_list
             print_green(food)
             found_food = True
             print()
-        elif any(map(lambda i: i in ingredients_list, ingredients)) and len(ingredients_list) < 3:
-            print_green(food)
-            found_food = True
-            print()
+            
     if not found_food:
         print_red('No recipes can be created, try adding more to the ingredients.txt file and rerun the '
                   'program!\n', 3)
-    sleep(1)
-    input("Press enter to exit...")
-    return
 
 
 if __name__ == '__main__':
