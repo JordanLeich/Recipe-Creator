@@ -91,6 +91,8 @@ def main() -> None:  # sourcery no-metrics
             add_to_ingredients_file()
         else:
             sys.exit()
+    if found_food:
+        sys.exit()
 
 
 if __name__ == '__main__':
