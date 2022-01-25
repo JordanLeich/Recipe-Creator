@@ -17,7 +17,7 @@ def add_to_ingredients_file() -> list:
             file.write(f"{user_input_ingredients}\n")
             ingredients_list.append(user_input_ingredients)
             print_green('Ingredient added!\n')
-    
+
     print_green('Here are all of the possible recipes.\n', 1)
     return ingredients_list
 
