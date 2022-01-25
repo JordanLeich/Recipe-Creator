@@ -1,25 +1,37 @@
 import sys
 from colors import print_red, print_green
-from time import sleep
 from os.path import exists as file_exists
-
 
 # Constant variables
 INGREDIENTS_LIST_FILE_PATH = 'ingredients.txt'
+
+
+def add_to_ingredients_file() -> list:
+    ingredients_list = []
+    with open(INGREDIENTS_LIST_FILE_PATH, 'w') as file:
+        ingredient_number = int(input('How many ingredients would you like to add? '))
+        print()
+        for _ in range(ingredient_number):  # TODO change to while loop that will accept ingredients without having to count them out
+            user_input_ingredients = str(input('Ingredient name: '))
+            print()
+            file.write(f"{user_input_ingredients}\n")
+            ingredients_list.append(user_input_ingredients)
+            print_green('Ingredient added!\n')
+
+    print_green('Here are all of the possible recipes.\n', 1)
+    return ingredients_list
 
 
 def main() -> None:  # sourcery no-metrics
     """Holds all possible recipe ingredients and then outputs all possible recipes based upon every line that is read
     in the ingredients.txt file."""
 
-    if bool(file_exists(INGREDIENTS_LIST_FILE_PATH)):  # To verify the file exist.
+    if file_exists(INGREDIENTS_LIST_FILE_PATH):  # To verify the file exist.
         with open(INGREDIENTS_LIST_FILE_PATH) as file:
-            ingredients_list = file.read().splitlines()
-        file.close()
+            ingredients_list = file.read().splitlines()  # TODO sterilize list of invalid characters
     else:  # When the file doesn't exist.
-        print_red('Please create a new text file named: ingredients.txt and rerun the program!\n', 2)
-        input("Press enter to exit...")
-        sys.exit()
+        print_red('Since the ingredients.txt file does not exist, a new file will be created!\n', 2)
+        ingredients_list = add_to_ingredients_file()
 
     recipes = {  # TODO: Keep adding more recipes
         'Macaroni & Cheese': ['milk', 'noodles', 'cheese'],
@@ -63,32 +75,26 @@ def main() -> None:  # sourcery no-metrics
         'Nachos w/Cheese': ['chips', 'meat', 'salsa', 'cheese'],
     }
     found_food = False
-    for food, ingredients in recipes.items():  # TODO Fix recipes displaying incorrectly based upon the ingredients list. For example, if i only have bread, i shouldn't be able to make grilled cheese or a ham and cheese sandwich.
-        if all(map(lambda i: i in ingredients_list, ingredients)) and len(ingredients_list) > 2:
+    for food, ingredients in recipes.items():  # N*M time complexity # TODO decrease time complexity
+        if all(x in ingredients_list for x in ingredients):  # check if ingredients are a sublist of ingredients_list
             print_green(food)
             found_food = True
             print()
-        elif any(map(lambda i: i in ingredients_list, ingredients)) and len(ingredients_list) < 3:
-            have_food = []
-            not_food = []
-            for food2 in ingredients:
-                if food2 in ingredients_list:
-                    have_food.append(food2)
-                else:
-                    not_food.append(food2)
-            message_food = food + f' Have ingredient {have_food} Ingredients to get {not_food}'
-            print_green(f'Recipe Name: {food}')
-            print_green(f'Have Ingredients: {have_food}')
-            print_red(f'Ingredients to get {not_food}')
-            found_food = True
-            print()
+    input('Press enter to exit')  # Keep this line so that the script cmd window doesn't automatically close for users.
+    print()
+
     if not found_food:
-        print_red('No recipes can be created, try adding more to the ingredients.txt file and rerun the '
-                  'program!\n', 3)
-    sleep(1)
-    input("Press enter to exit...")
-    return
+        print_red('Sorry, no recipes can be created.\n')
+        user_input = str(input('would you like to add ingredients to the ingredients.txt file (yes / no): '))
+        print()
+        if user_input.lower() in ['yes', 'y']:
+            add_to_ingredients_file()
+        else:
+            sys.exit()
+    if found_food:
+        sys.exit()
 
 
 if __name__ == '__main__':
-    main()
+    while True:
+        main()
