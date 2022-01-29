@@ -1,5 +1,5 @@
 import sys
-from colors import print_red, print_green
+from colors import print_red, print_green, print_yellow
 from os.path import exists as file_exists
 
 # Constant variables
@@ -7,17 +7,18 @@ INGREDIENTS_LIST_FILE_PATH = 'ingredients.txt'
 
 
 def add_to_ingredients_file() -> list:
+    """Allows the user to manually add ingredients to their ingredients.txt file."""
+    print_yellow('Please enter either exit or close to stop adding ingredients to your list.\n', 1)
     ingredients_list = []
     with open(INGREDIENTS_LIST_FILE_PATH, 'w') as file:
-        ingredient_number = int(input('How many ingredients would you like to add? '))
-        print()
-        for _ in range(ingredient_number):  # TODO change to while loop that will accept ingredients without having to count them out
+        user_input_ingredients = ''
+        while user_input_ingredients.lower() not in ['exit', 'close']:
             user_input_ingredients = str(input('Ingredient name: '))
             print()
             file.write(f"{user_input_ingredients}\n")
             ingredients_list.append(user_input_ingredients)
             print_green('Ingredient added!\n')
-
+        print_yellow('Ingredients have finished being added.\n', 1)
     print_green('Here are all of the possible recipes.\n', 1)
     return ingredients_list
 
@@ -42,14 +43,23 @@ def main() -> None:  # sourcery no-metrics
         'Chicken & Cheese Quesadillas': ['chicken', 'cheese', 'tortilla'],
         'Meat & Cheese Quesadillas': ['meat', 'cheese', 'tortilla'],
         'Ham & Cheese Sandwich': ['ham', 'cheese', 'bread'],
+        'Bacon & Cheese Sandwich': ['bacon', 'cheese', 'bread'],
+        'BLT Sandwich': ['bacon', 'tomatoes', 'bread', 'lettuce'],
+        'Fish Sandwich': ['fish', 'bread'],
+        'Turkey Sandwich': ['turkey', 'bread'],
+        'Turkey Sandwich w/Cheese': ['turkey', 'bread', 'cheese'],
+        'Sausage & Egg Muffin': ['sausage', 'eggs', 'muffins'],
         'Scrambled Eggs': ['eggs'],
+        'Cheesy Scrambled Eggs': ['eggs', 'cheese'],
         'Sunny Side Eggs': ['eggs'],
         'Omelette': ['eggs'],
-        'Hot dogs': ['buns', 'hotdog'],
+        'Hot Dogs': ['buns', 'hotdog'],
         'Chili Cheese Dogs': ['buns', 'hotdog', 'chili', 'cheese'],
         'Tacos': ['meat', 'shell'],
         'Tacos w/Chicken': ['chicken', 'shell'],
         'Taco Salad': ['meat', 'chips', 'lettuce'],
+        'Grilled Chicken Salad': ['lettuce', 'chicken'],
+        'Grilled Chicken Avocado Salad': ['lettuce', 'chicken', 'avocado'],
         'Grilled Cheese': ['cheese', 'bread'],
         'French Toast': ['bread', 'eggs'],
         'Burger': ['meat', 'buns'],
@@ -59,6 +69,7 @@ def main() -> None:  # sourcery no-metrics
         'Spaghetti': ['noodles', 'sauce'],
         'Alfredo': ['noodles', 'sauce'],
         'Chicken Alfredo': ['noodles', 'sauce', 'chicken'],
+        'Shrimp Scampi Linguine': ['shrimp', 'sauce', 'noodles'],
         'Chicken & Rice Combination': ['chicken', 'rice'],
         'Ice Cream Shake Drink': ['ice cream', 'milk'],
         'Baked potato': ['potatoes'],
@@ -71,8 +82,11 @@ def main() -> None:  # sourcery no-metrics
         'Pepperoni Pizza': ['dough', 'sauce', 'cheese', 'pepperoni'],
         'Pizza w/Meat': ['dough', 'sauce', 'cheese', 'meat'],
         'Pizza w/Chicken': ['dough', 'sauce', 'cheese', 'chicken'],
-        'Nachos': ['chips', 'meat', 'salsa'],
+        'Nachos w/Meat': ['chips', 'meat', 'salsa'],
+        'Nachos w/Chicken': ['chips', 'chicken', 'salsa'],
         'Nachos w/Cheese': ['chips', 'meat', 'salsa', 'cheese'],
+        'Ice Cream Sandwiches': ['ice cream', 'crackers'],
+        'Smore Sandwiches': ['chocolate', 'crackers', 'marshmallows'],
     }
     found_food = False
     for food, ingredients in recipes.items():  # N*M time complexity # TODO decrease time complexity
@@ -80,14 +94,14 @@ def main() -> None:  # sourcery no-metrics
             print_green(food)
             found_food = True
             print()
-    input('Press enter to exit')  # Keep this line so that the script cmd window doesn't automatically close for users.
+    input('Press enter to either continue or exit.')  # Keep this line so that the script cmd window doesn't automatically close for users.
     print()
 
     if not found_food:
         print_red('Sorry, no recipes can be created.\n')
-        user_input = str(input('would you like to add ingredients to the ingredients.txt file (yes / no): '))
+        user_input = str(input('Would you like to add ingredients to the ingredients.txt file (yes / no): '))
         print()
-        if user_input.lower() in ['yes', 'y']:
+        if user_input.lower() in ['yes', 'y', 'sure']:
             add_to_ingredients_file()
         else:
             sys.exit()
