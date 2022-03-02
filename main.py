@@ -23,7 +23,7 @@ def add_to_ingredients_file() -> list:
     return ingredients_list
 
 
-def main() -> None:  # sourcery no-metrics
+def main() -> None:    # sourcery no-metrics
     """Holds all possible recipe ingredients and then outputs all possible recipes based upon every line that is read
     in the ingredients.txt file."""
 
@@ -94,8 +94,20 @@ def main() -> None:  # sourcery no-metrics
             print_green(food)
             found_food = True
             print()
-    input('Press enter to either continue or exit.')  # Keep this line so that the script cmd window doesn't automatically close for users.
+    choice = input('Press enter to either continue or exit. Enter clear to clear all ingredients from the '
+                   'ingredients file: ')
     print()
+
+    if choice.lower() in ['clear', 'clr']:
+        with open(INGREDIENTS_LIST_FILE_PATH, 'r+') as file:
+            file.truncate(0)
+            print_green('Ingredients file as been cleared successfully!\n', 1)
+            choice = input('Want to add to your ingredients list? (yes / no): ')
+            print()
+            if choice.lower() in ['yes', 'y']:
+                add_to_ingredients_file()
+            else:
+                sys.exit()
 
     if not found_food:
         print_red('Sorry, no recipes can be created.\n')
