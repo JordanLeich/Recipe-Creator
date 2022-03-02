@@ -106,6 +106,7 @@ def main() -> None:    # sourcery no-metrics
             print()
             if choice.lower() in ['yes', 'y']:
                 add_to_ingredients_file()
+                main()
             else:
                 sys.exit()
 
