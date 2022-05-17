@@ -8,11 +8,12 @@ INGREDIENTS_LIST_FILE_PATH = 'ingredients.txt'
 
 def add_to_ingredients_file() -> list:
     """Allows the user to manually add ingredients to their ingredients.txt file."""
-    print_yellow('Please enter either exit or close to stop adding ingredients to your list.\n', 1)
-    ingredients_list = []
+    print_yellow('Please enter either exit, close, or stop to stop adding ingredients to your list.\n', 1)
+
     with open(INGREDIENTS_LIST_FILE_PATH, 'w') as file:
+        ingredients_list = []
         user_input_ingredients = ''
-        while user_input_ingredients.lower() not in ['exit', 'close']:
+        while user_input_ingredients.lower() not in ['exit', 'close', 'stop']:
             user_input_ingredients = str(input('Ingredient name: '))
             print()
             file.write(f"{user_input_ingredients}\n")
@@ -23,13 +24,13 @@ def add_to_ingredients_file() -> list:
     return ingredients_list
 
 
-def main() -> None:    # sourcery no-metrics
+def main() -> None:  # sourcery no-metrics
     """Holds all possible recipe ingredients and then outputs all possible recipes based upon every line that is read
     in the ingredients.txt file."""
 
     if file_exists(INGREDIENTS_LIST_FILE_PATH):  # To verify the file exist.
         with open(INGREDIENTS_LIST_FILE_PATH) as file:
-            ingredients_list = file.read().splitlines()  # TODO sterilize list of invalid characters
+            ingredients_list = file.read().splitlines()
     else:  # When the file doesn't exist.
         print_red('Since the ingredients.txt file does not exist, a new file will be created!\n', 2)
         ingredients_list = add_to_ingredients_file()
@@ -89,16 +90,20 @@ def main() -> None:    # sourcery no-metrics
         'Smore Sandwiches': ['chocolate', 'crackers', 'marshmallows'],
     }
     found_food = False
-    for food, ingredients in recipes.items():  # N*M time complexity # TODO decrease time complexity
+    for food, ingredients in recipes.items():
         if all(x in ingredients_list for x in ingredients):  # check if ingredients are a sublist of ingredients_list
             print_green(food)
             found_food = True
             print()
-    choice = input('Press enter to either continue or exit. Enter clear to clear all ingredients from the '
-                   'ingredients file: ')
+    choice = input('Press enter to either continue or exit. Enter add to add to your ingredients list. '
+                   'Enter clear to clear all ingredients from the ingredients file: ')
     print()
 
-    if choice.lower() in ['clear', 'clr']:
+    if choice.lower() in ['add', 'a']:
+        add_to_ingredients_file()
+        main()
+
+    if choice.lower() in ['clear', 'clr', 'c']:
         with open(INGREDIENTS_LIST_FILE_PATH, 'r+') as file:
             file.truncate(0)
             print_green('Ingredients file as been cleared successfully!\n', 1)
@@ -118,6 +123,7 @@ def main() -> None:    # sourcery no-metrics
             add_to_ingredients_file()
         else:
             sys.exit()
+
     if found_food:
         sys.exit()
 
